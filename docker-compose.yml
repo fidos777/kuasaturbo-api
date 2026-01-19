@@ -1,0 +1,97 @@
+# ============================================================
+# KUASATURBO PHASE 1α - DOCKER COMPOSE CONFIGURATION
+# ============================================================
+# Constitutional AI Execution Substrate
+# "KuasaTurbo executes once. Qontrek remembers forever. Only humans decide."
+# ============================================================
+
+version: '3.8'
+
+services:
+  # --------------------------------------------------------
+  # KUASATURBO EXECUTION ENGINE
+  # --------------------------------------------------------
+  kuasaturbo:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: kuasaturbo-engine
+    restart: unless-stopped
+    
+    # Environment from .env file
+    env_file:
+      - .env
+    
+    # Port mapping
+    ports:
+      - "${PORT:-3001}:3001"
+    
+    # Volume mounts for file I/O
+    volumes:
+      # Input files (read-only from host)
+      - ./inputs:/app/inputs:ro
+      
+      # Output files (write from container)
+      - ./outputs:/app/outputs:rw
+      
+      # Proof packs (write from container)
+      - ./proof:/app/proof:rw
+      
+      # Temporary processing (container-only)
+      - kuasaturbo-temp:/app/temp
+      
+      # Logs
+      - ./logs:/app/logs:rw
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    
+    # Security settings
+    security_opt:
+      - no-new-privileges:true
+    
+    # Read-only root filesystem (outputs via volumes)
+    read_only: false
+    
+    # Network
+    networks:
+      - kuasaturbo-net
+    
+    # Labels for identification
+    labels:
+      - "app=kuasaturbo"
+      - "layer=0"
+      - "phase=1alpha"
+      - "constitutional.s7=enforced"
+
+# --------------------------------------------------------
+# VOLUMES
+# --------------------------------------------------------
+volumes:
+  kuasaturbo-temp:
+    driver: local
+
+# --------------------------------------------------------
+# NETWORKS
+# --------------------------------------------------------
+networks:
+  kuasaturbo-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16

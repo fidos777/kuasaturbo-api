@@ -1,0 +1,61 @@
+{
+  "name": "kuasaturbo-ai-playground-api",
+  "version": "1.0.0-alpha",
+  "description": "KuasaTurbo AI Playground API - Layer 0 Constitutional Execution Substrate",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "node --test src/**/*.test.js",
+    "test:s7": "node --test src/guards/s7.test.js",
+    "test:retry": "node --test src/guards/retry.test.js",
+    "hello": "node scripts/hello-job.js",
+    "lint": "eslint src/",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "keywords": [
+    "kuasaturbo",
+    "ai-playground-api",
+    "qontrek",
+    "constitutional-ai",
+    "execution-substrate",
+    "layer-0"
+  ],
+  "author": "Qontrek",
+  "license": "PROPRIETARY",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.20.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.0",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "pdf-lib": "^1.17.1",
+    "sharp": "^0.33.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "constitutional": {
+    "layer": 0,
+    "invariants": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S7"
+    ],
+    "authority": "NONE",
+    "continuity": "FORBIDDEN"
+  }
+}
